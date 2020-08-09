@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+ 
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Tienda Virtual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+
+ 
+
+</head>
+
+ 
+
+<body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="/js/main.js"></script>
+
+ 
+
+
+<nav class="navbar navbar-expand-md">
+  
+  <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="main-navigation">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/productos/">Inicio</a>
+      </li>
+      <div sec:authorize="isAuthenticated()">
+          <li class="nav-item">
+               <a class="nav-link" href="/productos/add_product">Nuevo producto</a>
+          </li>
+      </div>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Acerca de</a>
+      </li>
+      
+      
+      <div th:unless="${#authorization.expression('isAuthenticated()')}">  
+       <li class="nav-item">
+        <a class="nav-link" href="/productos/login">Iniciar sesión</a>
+       </li>
+      </div>  
+      
+      <div sec:authorize="isAuthenticated()">
+       <li class="nav-item">
+        <a class="nav-link" href="/productos/logout">Cerrar sesión</a>
+       </li>
+       </div>
+      
+    </ul>
+  </div>
+</nav>
+
+ 
+
+<header class="page-header header container-fluid">
+<div class="overlay">
+
+ 
+
+    <div class="container my-2">
+        <div class="card-transparent">
+            <div class="card-body rounded" style="background-color: rgba(0, 0, 0, 0.4); ">
+                <div th:switch="${products}" class="container my-5">
+                        <h2 th:case="null">No products yet!</h2>
+                        <div th:case="*">
+                            <table class="table table-striped table-responsive-lg">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50%">Nombre</th>
+                                        <!-- REVISAR  -->
+                                        <th style="width: 11%">Descripción</th>
+                                        <th style="width: 17%">Imagen</th>
+                                        <th style="width: 11%">Cantidad</th>
+                                        <th style="width: 11%">Precio</th>
+                                        <th style="width: 7%">Ver</th>
+                                        <div sec:authorize="isAuthenticated()">
+                                           <th style="width: 7%">Edit</th>
+                                           <th style="width: 7%">Delete</th>
+                                        </div>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="producto : ${products}">
+                                        <td th:text="${producto.nombre}"></td>
+                                        <td th:text="${producto.descripcion}"></td>
+                                   		<td><img th:src="@{/pic/{id}(id=${producto.foto}+.jpg)}" width="80" class="rounded"></td>
+                                        <td th:text="${producto.cantidad}"></td>
+                                        <td th:text="${producto.precio}"></td>
+                                        
+                                        <td>
+                                         <a data-toggle="modal" data-target="#modalLong" th:attr="data-target='#modalLong'+${producto.id }" class="btn btn-primary">
+                                            <i class="fas fa-glasses ml-2"></i></a>
+                                         <div class="modal fade" th:id="modalLong+${producto.id}" tabindex="-1" role="dialog" aria-labelledby="detalleProducto" aria-hidden="true">
+                                               <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                      <div class="modal-header">
+                                                    <h5 class="modal-title text-dark">Detalle de producto</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                                      <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                        <h4 class="text-dark" th:text="${producto.nombre}"></h4>
+                                                        <p><img th:src="@{/pic/{id}(id=${producto.foto}+.jpg)}" width="240" class="rounded"></p>
