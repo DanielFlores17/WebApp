@@ -72,6 +72,13 @@ public class ProductoControlador {
      }
      
      
+     @GetMapping("/carrito")
+     public String showSignUpForm() {
+         return "carrito";
+     }
+     
+     
+     
      //aqui
      @GetMapping("/add_carrito")
      public String showProducts(HttpServletRequest resquest) {

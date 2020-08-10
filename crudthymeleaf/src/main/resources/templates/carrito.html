@@ -28,14 +28,25 @@
         <a class="nav-link" href="/productos/">Inicio</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/productos/admin">Ver productos</a>
+        <a class="nav-link" href="/productos/list">Ver productos</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Acerca de</a>
       </li>
-      <li class="nav-item">
+
+ 
+
+      <div th:unless="${#authorization.expression('isAuthenticated()')}">  
+       <li class="nav-item">
+        <a class="nav-link" href="/productos/login">Iniciar sesión</a>
+       </li>
+      </div>  
+      
+      <div sec:authorize="isAuthenticated()">
+       <li class="nav-item">
         <a class="nav-link" href="/productos/logout">Cerrar sesión</a>
-      </li>
+       </li> 
+      </div>
     </ul>
   </div>
 </nav>
