@@ -1,5 +1,6 @@
 package crudthymeleaf.entities;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -7,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 
@@ -16,6 +18,10 @@ public class Producto {
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	
+	@ManyToMany(mappedBy="producto")
+	private List<Factura> factura;
+	
 	
 	//@Column(name = "productos_nombre")
 	private String nombre;
@@ -27,7 +33,26 @@ public class Producto {
 	private Integer cantidad;
 	
 	private Float precio;
+
 	
+	
+	public Producto() {
+		super();
+	}
+
+	public Producto(Long id, List<Factura> factura, String nombre, UUID foto, String descripcion, Integer cantidad,
+			Float precio) {
+		super();
+		this.id = id;
+		this.factura = factura;
+		this.nombre = nombre;
+		this.foto = foto;
+		this.descripcion = descripcion;
+		this.cantidad = cantidad;
+		this.precio = precio;
+	}
+
+
 	public Long getId() {
 		return id;
 	}

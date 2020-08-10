@@ -1,6 +1,12 @@
 package crudthymeleaf.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,18 +20,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import crudthymeleaf.entities.Carrito;
+import crudthymeleaf.entities.Cliente;
 import crudthymeleaf.entities.Producto;
+import crudthymeleaf.repository.FacturaRepo;
 import crudthymeleaf.repository.ProductoRepo;
 import crudthymeleaf.service.PictureService;
 
 @Controller
 @RequestMapping("/productos")
-public class RecetaControlador {
+public class ProductoControlador {
 
  
 
      @Autowired
-     private ProductoRepo repo;
+     private ProductoRepo productorepo;
+     
+     
+     /*@Autowired
+     private FacturaRepo facturarepo;
+     
+     @Autowired
+     private Cliente clienterepo;*/
      
      @Autowired
         PictureService picService;
@@ -36,6 +52,14 @@ public class RecetaControlador {
         return "index";
      }
      
+     
+     
+ 	 Long ID;
+ 	 Producto producto;
+ 	 Carrito carrito;
+     //Seguir
+     
+     
      @GetMapping("/add_product")
      public String showSignUpForm(Producto producto) {
          return "add_product";
@@ -43,9 +67,30 @@ public class RecetaControlador {
  
      @GetMapping("/list")
      public String showProducts(Model model) {
-         model.addAttribute("products", repo.findAll());
+         model.addAttribute("products", productorepo.findAll());
          return "list_products";
      }
+     
+     
+     //aqui
+     @GetMapping("/add_carrito")
+     public String showProducts(HttpServletRequest resquest) {
+    	 	ID =  Long.parseLong(resquest.getParameter("ID"));	//Captura el ID
+			producto = productorepo.findById(ID).orElseThrow( () -> new IllegalArgumentException("invalid product id: "+ID));;	//Captura el producto
+			carrito.AddProductoCarrito(producto);
+			return null;
+     }
+     
+     @GetMapping("/delete_carrito")		
+ 	public void DeleteProductoCarrito(HttpServletRequest request) throws ServletException, IOException 
+ 	{
+    	 Long BuscarId= Long.parseLong(request.getParameter("buscarid"));
+    	 carrito.RemoveProductoCarrito(BuscarId);
+ 	}
+     
+     
+     
+     
      
      @RequestMapping("/login")
      public String showLogin() {
@@ -60,20 +105,20 @@ public class RecetaControlador {
      @PreAuthorize("hasAuthority('admin')")
      @RequestMapping("/private")
      public String showPrivate(Model model) {
-         model.addAttribute("products", repo.findAll());
+         model.addAttribute("products", productorepo.findAll());
          return "list_products";
      }
      
      @PreAuthorize("hasAuthority('admin')")
      @PostMapping("/add")
      public String addProduct(Producto producto, BindingResult result, Model model, @RequestParam("file") MultipartFile file) {
-         if (result.hasErrors()) {
+         if (result.hasErrors()) { 
             return "add_product";
          }
          UUID idPic = UUID.randomUUID();
          picService.uploadPicture(file, idPic);
          producto.setFoto(idPic);
-         repo.save(producto);   
+         productorepo.save(producto);   
          return "redirect:list";
      }
 
@@ -82,7 +127,7 @@ public class RecetaControlador {
      @PreAuthorize("hasAuthority('admin')")
      @GetMapping("/edit/{id}")
      public String showUpdateForm(@PathVariable("id") Long id, Model model) {
-         Producto producto = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
+         Producto producto = productorepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
          model.addAttribute("product", producto);
          return "update_product";
      }
@@ -101,7 +146,7 @@ public class RecetaControlador {
              picService.uploadPicture(file, idPic);
              producto.setFoto(idPic);
          }
-         repo.save(producto);
+         productorepo.save(producto);
          return "redirect:/productos/list";
      }
 
@@ -110,10 +155,10 @@ public class RecetaControlador {
      @PreAuthorize("hasAuthority('admin')")
      @GetMapping("/delete/{id}")
      public String deleteProduct(@PathVariable("id") Long id, Model model) {
-         Producto producto = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
+         Producto producto = productorepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
          picService.deletePicture(producto.getFoto());
-         repo.delete(producto);         
-         model.addAttribute("products", repo.findAll());
+         productorepo.delete(producto);         
+         model.addAttribute("products", productorepo.findAll());
          return "list_products";
      }
 }

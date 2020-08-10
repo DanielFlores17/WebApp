@@ -1,43 +1,47 @@
 package crudthymeleaf.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import crudthymeleaf.entities.Cliente;
-import crudthymeleaf.entities.Producto;
 
 @Entity
 @Table
 public class Factura {
+	
 	@Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@ManyToOne
+	private Cliente cliente;
 	
-	/*@JoinColumn(name="ID_Producto")
-	@ManyToMany(cascade = CascadeType.ALL)		//Relación a producto
-	private Producto producto;
+	@ManyToMany
+	private List<Producto> producto;
 	
-	@JoinColumn(name="Email")
-	@ManyToOne(cascade = CascadeType.ALL)		//Relación a cliente
-	private Cliente cliente;*/
-	
-	//Faltaría la cantidad de poductos similares
-	private float TotalaPagar;
+	private Float TotalaPagar;
 	
 
-	/*public Factura (Producto producto, Cliente cliente) {
-		this.producto=producto;
-		this.cliente=cliente;
-	}*/
+	public Factura(Long id, Cliente cliente, List<Producto> producto, Float totalaPagar) {
+		super();
+		this.id = id;
+		this.cliente = cliente;
+		this.producto = producto;
+		TotalaPagar = totalaPagar;
+	}
+
+
+	public Factura() {
+		super();
+	}
+
+
 
 	public Long getId() {
 		return id;
@@ -47,29 +51,22 @@ public class Factura {
 		this.id = id;
 	}
 
-	/*public Producto getProducto() {
-		return producto;
-	}
-
-	public void setProducto(Producto producto) {
-		this.producto = producto;
-	}
-
 	public Cliente getCliente() {
 		return cliente;
 	}
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
-	}*/
-	
-	public float getTotalaPagar() {
+	}
+
+	public Float getTotalaPagar() {
 		return TotalaPagar;
 	}
 
-	public void setTotalaPagar(float totalaPagar) {
+	public void setTotalaPagar(Float totalaPagar) {
 		TotalaPagar = totalaPagar;
 	}
+	
 	
 	
 }

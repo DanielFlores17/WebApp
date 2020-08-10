@@ -1,63 +1,22 @@
 package crudthymeleaf.entities;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 public class Carrito {
 
-	Integer Num_Productos;
-	Long Id_Productos;
-	String nombres;
-	String descripcion;
-	float precio;
-	int cantidad;
-	float PagoTotal;
+	public List<Producto> listaproducto= new ArrayList<>();
 	
-	public Integer getNum_Productos() {
-		return Num_Productos;
+	public float PagoTotal;
+	
+	public Carrito() {
+		PagoTotal=0;
 	}
-	
-	public void setNum_Productos(Integer num_Productos) {
-		Num_Productos = num_Productos;
-	}
-	
-	public Long getId_Productos() {
-		return Id_Productos;
-	}
-	
-	public void setId_Productos(Long id_Productos) {
-		Id_Productos = id_Productos;
-	}
-	
-	public String getNombres() {
-		return nombres;
-	}
-	
-	public void setNombres(String nombres) {
-		this.nombres = nombres;
-	}
-	
-	public String getDescripcion() {
-		return descripcion;
-	}
-	
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-	
-	public float getPrecio() {
-		return precio;
-	}
-	
-	public void setPrecio(float precio) {
-		this.precio = precio;
-	}
-	
-	public int getCantidad() {
-		return cantidad;
-	}
-	
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
-	}
-	
+
 	public float getPagoTotal() {
 		return PagoTotal;
 	}
@@ -65,6 +24,44 @@ public class Carrito {
 	public void setPagoTotal(float pagoTotal) {
 		PagoTotal = pagoTotal;
 	}
+		
+	public float calcTotal() {
+		for(int i=0;i<listaproducto.size();i++)
+		{
+			PagoTotal = PagoTotal + listaproducto.get(i).getPrecio();
+		}
+		return PagoTotal;
+	}
+	
+	
+	public void AddProductoCarrito(Producto add_producto) {
+		listaproducto.add(add_producto);
+		calcTotal();
+	}
+	
+	
+	public void RemoveProductoCarrito(Long BuscarId) {
+		
+		boolean Encontrado= false;
+		Integer i=0;
+		
+		while(Encontrado==false && listaproducto.size()>i+1) {
+			if(listaproducto.get(i).getId()==BuscarId) {
+				listaproducto.remove(i);
+				Encontrado = true;
+			}
+			else
+			i=i+1;
+		}
+		if (Encontrado==true) {
+			calcTotal();
+		}		
+	}
+	
+	
+	
+	
+	
 	
 	
 }
