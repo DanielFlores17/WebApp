@@ -54,10 +54,9 @@ public class ProductoControlador {
      
      
      
- 	 Long ID;
+ 	 Long id;
  	 Producto producto;
  	 Carrito carrito;
-     //Seguir
      
      
      @GetMapping("/add_product")
@@ -71,6 +70,10 @@ public class ProductoControlador {
          return "list_products";
      }
      
+     @GetMapping("/about")
+	 public String showAbout() {
+	     return "about_us";
+	 }	
      
      @GetMapping("/carrito")
      public String showSignUpForm() {
@@ -82,11 +85,13 @@ public class ProductoControlador {
      //aqui
      @GetMapping("/add_carrito")
      public String showProducts(HttpServletRequest resquest) {
-    	 	ID =  Long.parseLong(resquest.getParameter("ID"));	//Captura el ID
-			producto = productorepo.findById(ID).orElseThrow( () -> new IllegalArgumentException("invalid product id: "+ID));;	//Captura el producto
+    	 	id =  Long.parseLong(resquest.getParameter("id"));
+    	 	System.out.println(id);
+			producto = productorepo.findById(id).orElseThrow( () -> new IllegalArgumentException("invalid product id: "+id));;
 			carrito.AddProductoCarrito(producto);
 			return null;
      }
+     
      
      @GetMapping("/delete_carrito")		
  	public void DeleteProductoCarrito(HttpServletRequest request) throws ServletException, IOException 
